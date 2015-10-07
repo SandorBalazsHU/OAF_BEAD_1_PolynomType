@@ -1,10 +1,14 @@
-#ifndef _POLYNOM_H
-#define _POLYNOM_H
+#ifndef POLYNOMCONSOLE_H_INCLUDED
+#define POLYNOMCONSOLE_H_INCLUDED
+#include "Polynom.h"
+//Objektum elvű alkalmazások fejesztése gyakorlat 1. beadandó
+//Sándor Balézs - AZA6NL
 
-class PolynomConsole : public Polynom
+class PolynomConsole: public Polynom
 {
-    private:
     public:
+	void read();
+	void write();
 };
 
 #endif
