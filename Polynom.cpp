@@ -1,4 +1,5 @@
-#include "Polynom.h"
+﻿#include "Polynom.h"
+#include <algorithm>
 //Objektum elvű alkalmazások fejesztése gyakorlat 1. beadandó
 //Sándor Balézs - AZA6NL
 
@@ -18,7 +19,20 @@
 		//a paraméterként kapott tömb elemeinek másolása
 		for(int i=0; i<n; i++)
 		{
-			_p[i] = t[n];
+			_p[i] = t[i];
+		}
+	}
+	//Konstruktor 3 - Egy vektor alapján hoz létre egy új polinomot
+	Polynom::Polynom(std::vector<double>& v)
+	{
+		//az elemek számának másolása
+		_n = v.size();
+		//dinamikus helyfoglalású tömb létrehozása a polinom valós együtthatóinak tárolásához
+		_p = new double[_n];
+		//a paraméterként kapott tömb elemeinek másolása
+		for(int i=0; i<_n; i++)
+		{
+			_p[i] = v[i];
 		}
 	}
 	//A másoló konstruktor
@@ -63,24 +77,38 @@
 	//Két polinom összeadása (Kommutatív)
 	Polynom Polynom::operator+(const Polynom& p) const
 	{
-		double* polynom = _p;
-		int nuberOfElements = _n;
+		//Mlyik a nagyobb
+		int smallerSize = _n;
+		int biggerSize =  p._n;
+		double* biggerPolynom = p._p;
+		double* smallerPolynom = _p;
 		if(_n > p._n)
 		{
-			polynom = p._p;
-			nuberOfElements = p._n;
+			smallerSize = p._n;
+			biggerSize =  _n;
+			biggerPolynom = _p;
+			smallerPolynom = p._p;
+			
 		}
-		for(int i=0; i<nuberOfElements; i++)
+		//Másolás a const miatt
+		double* polynom = new double[biggerSize];
+		for(int i=0; i<biggerSize; i++)
 		{
-			polynom[i] = _p[i]+p._p[i];
+			polynom[i] = biggerPolynom[i];
 		}
-		return Polynom(polynom, nuberOfElements);
+		
+		for(int i=0; i<smallerSize; i++)
+		{
+			polynom[i] += smallerPolynom[i];
+		}
+		return Polynom(polynom, biggerSize);
 	}
 	//Két polinom szorzata (Kommutatív)
 	Polynom Polynom::operator*(const Polynom &p) const
 	{
-		int nuberOfElements = _n+p._n-2;
+		int nuberOfElements = _n+p._n-1;
 		double newPolynom[nuberOfElements];
+		std::fill_n(newPolynom, nuberOfElements, 0);
 
 		for(int i=0; i<_n; i++)
 		{
@@ -94,7 +122,7 @@
 
 //Kommutatív műveletek polinom és egy konstans között
 	//Polinom szorzata konstansal (nem Kommutatív)
-	Polynom Polynom::operator*(const double c)
+	Polynom Polynom::operator*(const double c) const
 	{
 		double newPolynom[_n];
 		for(int i=0; i<_n; i++)
@@ -114,7 +142,7 @@
 		return Polynom(newPolynom, p._n);
 	}
 	//Polinom összeadása konstansal (nem Kommutatív)
-	Polynom Polynom::operator+(const double c)
+	Polynom Polynom::operator+(const double c) const
 	{
 		double newPolynom[_n];
 		for(int i=0; i<_n; i++)
